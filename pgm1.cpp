@@ -60,18 +60,57 @@ process *bubble_sort(process *p,int n,int compare_variable){ //0 for burst_time 
 		}
 	}
 	return p;
-}		
+}
+
+void round_robin(process *p,int n,int quantum){
+	int remaining_bt[n];
+	int waiting_time[n];
+	for(int i=0;i<n;i++){
+		remaining_bt[i]=p[i].burst_time;
+	}
+	int t=0;
+	while(1){
+		int completed=1;
+		for(int i=0;i<n;i++){
+			if(remaining_bt[i]>0){
+				completed=0;
+				if(remaining_bt[i]>quantum){
+					t+=quantum;
+					remaining_bt[i]-=quantum;
+				}
+				else{
+					t=t+remaining_bt[i];
+					waiting_time[i]=t-p[i].burst_time;
+					remaining_bt[i]=0;
+				}
+			}
+
+			}
+		if(completed==1){
+				break;
+		}
+	}
+	int turnaround_time[n];
+	for(int i=0;i<n;i++){
+		turnaround_time[i]=p[i].burst_time+waiting_time[i];
+	}
+	cout<<"\n";
+	for(int i=0;i<n;i++){
+		cout<<"waiting time of process p"<<i<<" is "<<waiting_time[i]<<endl;
+		cout<<"Turnaround time of process p"<<i<<" is "<<turnaround_time[i]<<endl;
+	}
+}
 void menu(process *p,int n){
 	int option;
 	cout<<"What scheduling algorithm you want to simluate"<<endl;
 	cout<<"1.FCFS 2.SJF 3.Priority 4.Round Robin\n";
 	cin>>option;
 	switch(option){
-		case 1:     
+		case 1:
 				cout<<"\nThe FCFS sheduling\n"<<endl;
         		fcfs(p,n);
 				break;
-		case 2: 
+		case 2:
 				cout<<"\nThe shortjest job first scheduling\n"<<endl;
 		   		process *p2;
         		p2=bubble_sort(p,n,0);
@@ -89,63 +128,12 @@ void menu(process *p,int n){
 				cout<<"Enter the time quantum"<<endl;
 				cin>>tq;
 				round_robin(p,n,tq);
-				break;	
+				break;
 		default:
-				system("CLS"); 
+				system("clear");
 				cout<<"Not a valid option";
 	}
 
-}
-void round_robin(process *p,int n,int quantum){
-	int t=0;
-	int waiting_time=0;
-	int turnaround_time=0;
-	int pid=0;
-	int tbt=total_burst_time(p,n);
-	int temp_burst_time=0;
-	for(int i=0;i<n;i++){	
-		t=0;
-		pid=0;
-		temp_burst_time=p[i].burst_time;
-		waiting_time=0;
-		turnaround_time=0;
-		do{
-			if(p[pid].burst_time<=quantum){
-				t+=p[pid].burst_time;
-				
-			}	
-			else
-				t+=quantum;
-			
-			if(pid==i){//the turn of our process
-			//	cout<<"Executing process p"<<i+1<<endl;
-				if(temp_burst_time>=quantum){
-					temp_burst_time-=quantum;
-			//		cout<<"temp burst time"<<temp_burst_time<<endl;
-				}
-				else{ //end of process execution
-			//			cout<<"End of process"<<i+1<<": waiting time= "<<waiting_time<<endl;
-						turnaround_time=t;
-						break;
-				}
-			}
-			else{// all process other than the current process
-			//	cout<<"Executing process p"<<pid<<endl;
-				if(temp_burst_time<=quantum){
-					waiting_time+=p[pid].burst_time;
-				}
-				else
-					waiting_time+=quantum;
-			//	cout<<"waiting_time"<<waiting_time<<endl;
-			}
-
-			pid=(pid+1)%n; 
-			
-		}while(t<=p[i].burst_time);
-	//	cout<<"going for next cycle time="<<t<<endl;
-	cout<<"The waiting time of process "<<i+1<<" is : "<<waiting_time<<endl;
-	cout<<"The turnaroud time of the process"<<i+1<<"is :"<<turnaround_time<<endl;
-	}
 }
 int main(){
 	int n;
@@ -163,6 +151,7 @@ int main(){
 		(p+i)->display_data();
 	}
 	do{
+		system("clear");
 		menu(p,n);
 		cout<<"Do you want to continue: ";
 		cin>>choice;
