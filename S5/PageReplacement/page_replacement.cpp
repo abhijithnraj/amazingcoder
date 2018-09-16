@@ -9,6 +9,7 @@ class Memory{
 		int n;
 		Memory(int n){ //creating a cache with n blocks
 			this->n=n;
+			cache_full=0;
 			cache=(int *) malloc(n*sizeof(int));
 			for(int i=0;i<n;i++){
 				cache[i]=0;
@@ -16,11 +17,11 @@ class Memory{
 		}
 		Memory(int n,Memory m){ //copy constructor for debugging -> remove later
 			this->n=n;
+			cache_full=0;
 			cache=(int *) malloc(n*sizeof(int));
 			for(int i=0;i<n;i++){
 				this->cache[i]=m.cache[i];
 			}
-
 		}
 		int cache_full;
 		int full(){ //returns 0 if cache is not full, returns 1 if cache is full
@@ -80,9 +81,11 @@ void page_replace(int algorithm,int cache_size,vector<int> page_string,vector<Me
 			if(algorithm==2){
 				int pos=-1;
 				for(int k=0;k<cache_size;k++){
-					if(lru_stack[i]==page_string[i]){
-						pos=k;
-						break;
+					if(lru_stack.size()>0){
+						if(lru_stack[i]==page_string[i]){
+							pos=k;
+							break;
+						}
 					}
 				}
 				temp_value=lru_stack[pos];
@@ -131,7 +134,9 @@ void page_replace(int algorithm,int cache_size,vector<int> page_string,vector<Me
 					// 	temp->cache[changing_index]=current_page;
 					//
 					// }
-					changing_index=lru_stack[0];
+					if(lru_stack.size()>0){
+						changing_index=lru_stack[0];
+					}
 					temp->cache[changing_index]=current_page;
 
 					}
@@ -166,7 +171,7 @@ int main() {
 			cout<<page_string[i]<<",";
 		}
 		cout<<page_string[page_string.size()-1]<<endl;
-		page_replace(1,cache_size,page_string,cache_states); // 1->FIFO 2->LRU
+		page_replace(2,cache_size,page_string,cache_states); // 1->FIFO 2->LRU
 		cout<<"Thank you for using this pgm";
 		return 0;
 
