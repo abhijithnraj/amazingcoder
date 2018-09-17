@@ -76,7 +76,7 @@ void LRU(int cache_size, vector<int> page_string, vector<Memory> cache_states) {
 void display_cache_states(int cache_size, std::vector<Memory> cache_states) { //works perfectly
 	// to display the cache states nicely
 	cout << "The different cache states are " << endl;
-	for (int j = 0; j < cache_size; j++) {
+	for (int j = 0; j < cache_size; j++){
 		for (int i = 0; i < cache_states.size(); i++) {
 			if (cache_states[i].cache[j] == -10) {
 				cout << "." << setw(6);
@@ -91,7 +91,7 @@ void display_cache_states(int cache_size, std::vector<Memory> cache_states) { //
 }
 
 void FIFO(int cache_size, vector<int> page_string,
-		vector<Memory> cache_states) {
+	vector<Memory> cache_states) {
 	Memory *temp;
 	int page_faults = 0;
 	int n = page_string.size();
@@ -100,9 +100,6 @@ void FIFO(int cache_size, vector<int> page_string,
 	int changing_index = 0;
 	temp = new Memory(cache_size);
 	for (int i = 0; i < n; i++) {
-		if (cache_states.size() != 0) {
-			temp = new Memory(cache_size, *temp);
-		}
 		present_already = 0;
 		current_page = page_string[i];
 		for (int j = 0; j < cache_size; j++) {
@@ -110,23 +107,13 @@ void FIFO(int cache_size, vector<int> page_string,
 				present_already = 1;
 			}
 		}
-		int temp_value;
-		if (present_already == 1) {
-			cache_states.push_back(*temp);
-			continue;
-
-		} else {
-
-			if (temp->full() == 0) {
-				temp->cache[changing_index] = current_page;
-				changing_index = (changing_index + 1) % cache_size;
-			} else if (temp->full() == 1) {
-				temp->cache[changing_index] = current_page;
-				changing_index = (changing_index + 1) % cache_size;
-			}
+		if (present_already == 0) {
+			temp->cache[changing_index] = current_page;
+			changing_index = (changing_index + 1) % cache_size;
 			page_faults += 1;
 
-		}
+		} 
+		temp = new Memory(cache_size, *temp);
 		cache_states.push_back(*temp);
 	}
 	display_cache_states(cache_size, cache_states);
@@ -203,7 +190,7 @@ int main() {
 	LRU(cache_size, page_string, cache_states);
 	cout << endl << "LFU" << endl;
 	LFU(cache_size, page_string, cache_states);
-	cout << "Thank you for using this pgm";
+	cout << "*****Thank you for using this pgm*******\n";
 	return 0;
 
 }
