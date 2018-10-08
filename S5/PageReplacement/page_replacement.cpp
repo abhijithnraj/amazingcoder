@@ -58,6 +58,7 @@ void LRU(int cache_size, vector<int> page_string, vector<Memory> cache_states) {
 			}
 			if (pos == -1) {
 				m.cache[(lru_stack[0])] = page_string[i];
+				cout<<"Page now is "<<page_string[i]<<" Replacing stack "<<lru_stack[0]<<" position"<<endl;
 				lru_stack.erase(lru_stack.begin());
 				lru_stack.push_back(i);
 				page_faults++;
