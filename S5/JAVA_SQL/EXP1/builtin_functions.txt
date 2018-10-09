@@ -1,0 +1,2 @@
+select * from registration1 join staff on 
+where 
